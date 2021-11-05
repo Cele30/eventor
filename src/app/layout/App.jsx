@@ -1,8 +1,15 @@
+import { Container } from "semantic-ui-react";
+import EventDashboard from "../../features/events/eventDashboard/EventDashboard";
+import Navbar from "../../features/navbar/Navbar";
+
 function App() {
   return (
-    <div className="App">
-      <h1>Revents</h1>
-    </div>
+    <>
+      <Navbar />
+      <Container className="main">
+        <EventDashboard />
+      </Container>
+    </>
   );
 }
 
