@@ -1,37 +1,54 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
 import cuid from "cuid";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
-function EventForm({
-  setFormOpen,
-  setEvents,
-  createEvent,
-  selectedEvent,
-  updateEvent,
-}) {
-  const initialValues = selectedEvent ?? {
+import { useDispatch, useSelector } from "react-redux";
+import { updateEvent, createEvent } from "../eventSlice";
+
+function EventForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const selectedEvent = useSelector((state) =>
+    state.event.events.find((e) => e.id === id)
+  );
+  const dispatch = useDispatch();
+
+  const [values, setValues] = useState({
     title: "",
     category: "",
     description: "",
     city: "",
     venue: "",
     date: "",
-  };
+  });
 
-  const [values, setValues] = useState(initialValues);
+  useEffect(() => {
+    const initialValues = selectedEvent ?? {
+      title: "",
+      category: "",
+      description: "",
+      city: "",
+      venue: "",
+      date: "",
+    };
+
+    setValues(initialValues);
+  }, [selectedEvent]);
 
   const handleFormSubmit = () => {
     selectedEvent
-      ? updateEvent({ ...selectedEvent, ...values })
-      : createEvent({
-          ...values,
-          id: cuid(),
-          hostedBy: "Bob",
-          attendees: [],
-          hostPhotoURL: "/assets/user.png",
-        });
-    setFormOpen(false);
+      ? dispatch(updateEvent({ ...selectedEvent, ...values }))
+      : dispatch(
+          createEvent({
+            ...values,
+            id: cuid(),
+            hostedBy: "Bob",
+            attendees: [],
+            hostPhotoURL: "/assets/user.png",
+          })
+        );
+    navigate("/events");
   };
 
   const handleInputChange = (event) => {
@@ -118,4 +135,4 @@ function EventForm({
   );
 }
 
-export default EventForm;
+export default React.memo(EventForm);

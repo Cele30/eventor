@@ -1,8 +1,13 @@
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Icon, Item, List, Segment } from "semantic-ui-react";
 import EventListAttendee from "./EventListAttendee";
 
-function EventListItem({ event, selectEvent, deleteEvent }) {
+import { deleteEvent } from "../eventSlice";
+
+function EventListItem({ event }) {
+  const dispatch = useDispatch();
+
   return (
     <Segment.Group>
       <Segment>
@@ -39,14 +44,14 @@ function EventListItem({ event, selectEvent, deleteEvent }) {
           color="red"
           floated="right"
           content="Delete"
-          onClick={() => deleteEvent(event.id)}
+          onClick={() => dispatch(deleteEvent(event.id))}
         />
         <Button
           color="teal"
           floated="right"
           content="View"
           as={Link}
-          to={`:${event.id}`}
+          to={`${event.id}`}
         />
       </Segment>
     </Segment.Group>
