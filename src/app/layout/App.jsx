@@ -6,10 +6,13 @@ import EventForm from "../../features/events/eventForm/EventForm";
 import HomePage from "../../features/home/HomePage";
 import Navbar from "../../features/navbar/Navbar";
 import Sandbox from "../../features/sandbox/Sandbox";
+import ModalManager from "../common/modal/ModalManager";
 
 function App() {
   return (
     <>
+      <ModalManager />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sandbox" element={<Sandbox />} />

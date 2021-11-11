@@ -21,7 +21,7 @@ function EventDetailedInfo({ event }) {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{format(event.date, "MMMM d, yyyy h:mm a")}</span>
+            <span>{format(new Date(event.date), "MMMM d, yyyy h:mm a")}</span>
           </Grid.Column>
         </Grid>
       </Segment>

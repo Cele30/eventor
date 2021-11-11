@@ -25,7 +25,8 @@ function EventListItem({ event }) {
 
       <Segment>
         <span>
-          <Icon name="clock" /> {format(event.date, "MMMM d, yyyy h:mm a")}
+          <Icon name="clock" />{" "}
+          {format(new Date(event.date), "MMMM d, yyyy h:mm a")}
           <Icon name="marker" /> {event.venue}
         </span>
       </Segment>

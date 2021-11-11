@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "semantic-ui-react";
+import { openModal } from "../../app/common/modal/modalSlice";
 import { decerment, increment } from "./SandboxSlice";
 
 function Sandbox() {
@@ -20,6 +21,14 @@ function Sandbox() {
         content="Decrement"
         color="green"
         onClick={() => dispatch(decerment(2))}
+      />
+
+      <Button
+        content="open modal"
+        color="teal"
+        onClick={() =>
+          dispatch(openModal({ modalType: "TestModal", modalProps: { data } }))
+        }
       />
     </>
   );
