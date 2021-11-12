@@ -2,7 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import "semantic-ui-css/semantic.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import "react-calendar/dist/Calendar.css";
 import "./app/layout/styles.css";
+
 import App from "./app/layout/App";
 import { BrowserRouter } from "react-router-dom";
 
@@ -11,6 +14,9 @@ import { store } from "./app/store/configureStore";
 
 import reportWebVitals from "./reportWebVitals";
 import ScrollToTop from "./app/layout/ScrollToTop";
+
+import { fetchEvents } from "./features/events/eventSlice";
+store.dispatch(fetchEvents());
 
 ReactDOM.render(
   <Provider store={store}>

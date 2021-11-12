@@ -7,11 +7,13 @@ import HomePage from "../../features/home/HomePage";
 import Navbar from "../../features/navbar/Navbar";
 import Sandbox from "../../features/sandbox/Sandbox";
 import ModalManager from "../common/modal/ModalManager";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
       <ModalManager />
+      <ToastContainer position="bottom-right" hideProgressBar />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
