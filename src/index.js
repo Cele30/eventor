@@ -15,9 +15,6 @@ import { store } from "./app/store/configureStore";
 import reportWebVitals from "./reportWebVitals";
 import ScrollToTop from "./app/layout/ScrollToTop";
 
-import { fetchEvents } from "./features/events/eventSlice";
-store.dispatch(fetchEvents());
-
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

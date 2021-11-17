@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchSampleData } from "../../app/api/mockApi";
-import { sampleData } from "../../app/api/sampleData";
 
 export const fetchEvents = createAsyncThunk("event/fetchEvents", async () => {
   const events = await fetchSampleData();
@@ -31,6 +30,9 @@ const eventSlice = createSlice({
       );
       state.events = newEvents;
     },
+    listenToEvents: (state, action) => {
+      state.events = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchEvents.pending, (state, action) => {
@@ -43,6 +45,7 @@ const eventSlice = createSlice({
   },
 });
 
-export const { createEvent, updateEvent, deleteEvent } = eventSlice.actions;
+export const { createEvent, updateEvent, deleteEvent, listenToEvents } =
+  eventSlice.actions;
 
 export default eventSlice.reducer;

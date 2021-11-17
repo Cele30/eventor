@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "semantic-ui-react";
 import { openModal } from "../../app/common/modal/modalSlice";
-import { decerment, increment, incrementAsync } from "./SandboxSlice";
+import { decerment, incrementAsync } from "./SandboxSlice";
 
 function Sandbox() {
   const { data } = useSelector((state) => state.test);

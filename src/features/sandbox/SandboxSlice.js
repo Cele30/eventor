@@ -5,7 +5,7 @@ import {
   asyncFinish,
   asyncStart,
 } from "../../app/asyncSlice/asyncSlice";
-import { delay } from "../../app/util/util";
+import { delay } from "../../app/common/util/util";
 
 const textSlice = createSlice({
   name: "textSlice",
@@ -31,7 +31,7 @@ export const incrementAsync = (amount) => async (dispatch) => {
   dispatch(asyncStart());
   try {
     await delay(1000);
-    throw "oops";
+    // throw "oops";
     dispatch(incrementByAmount(amount));
     dispatch(asyncFinish());
   } catch (error) {

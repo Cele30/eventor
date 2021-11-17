@@ -8,6 +8,7 @@ import Navbar from "../../features/navbar/Navbar";
 import Sandbox from "../../features/sandbox/Sandbox";
 import ModalManager from "../common/modal/ModalManager";
 import { ToastContainer } from "react-toastify";
+import ErrorComponent from "../common/errors/ErrorComponent";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             {["createEvent", "manage/:id"].map((path, index) => (
               <Route path={path} element={<EventForm />} key={index} />
             ))}
+            <Route path="/error" element={<ErrorComponent />} />
           </Route>
         </Routes>
       </Container>

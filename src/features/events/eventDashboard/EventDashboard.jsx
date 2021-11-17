@@ -1,13 +1,25 @@
 import { Grid } from "semantic-ui-react";
-import EventList from "./EventList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
+
+import EventList from "./EventList";
 import EventListItemPlaceholder from "./EventListItemPlaceholder";
 import EventFilters from "./EventFilters";
 
+import { listenToEvents } from "../eventSlice";
+import { useFirestoreCollection } from "../../../app/hooks/useFirestoreCollection";
+import { listenToEventsFromFirestore } from "../../../app/services/firebaseService";
+
 function EventDashboard() {
-  const { events, loading } = useSelector((state) => state.event);
+  const dispatch = useDispatch();
+  const { events } = useSelector((state) => state.event);
+  const { loading } = useSelector((state) => state.async);
+
+  useFirestoreCollection({
+    query: listenToEventsFromFirestore(),
+    data: (events) => dispatch(listenToEvents(events)),
+    deps: [dispatch],
+  });
 
   return (
     <Grid>
