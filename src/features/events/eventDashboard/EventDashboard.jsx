@@ -16,7 +16,7 @@ function EventDashboard() {
   const { loading } = useSelector((state) => state.async);
 
   useFirestoreCollection({
-    query: listenToEventsFromFirestore(),
+    query: () => listenToEventsFromFirestore(),
     data: (events) => dispatch(listenToEvents(events)),
     deps: [dispatch],
   });

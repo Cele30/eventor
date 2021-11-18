@@ -5,14 +5,13 @@ import EventDetailedInfo from "./EventDetailedInfo";
 import EventDetailedSidebar from "./EventDetailedSidebar";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirestoreDoc } from "../../../app/hooks/useFirestoreDoc";
 import { listenToEventFromFirestore } from "../../../app/services/firebaseService";
 import { listenToEvents } from "../eventSlice";
 
 function EventDetailed() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
   const event = useSelector((state) =>
@@ -21,7 +20,7 @@ function EventDetailed() {
   const { loading, error } = useSelector((state) => state.async);
 
   useFirestoreDoc({
-    query: listenToEventFromFirestore(id),
+    query: () => listenToEventFromFirestore(id),
     data: (event) => dispatch(listenToEvents([event])),
     deps: [id],
   });

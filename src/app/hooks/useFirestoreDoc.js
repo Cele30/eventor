@@ -1,16 +1,23 @@
-import { onSnapshot } from "@firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { asyncError, asyncFinish, asyncStart } from "../asyncSlice/asyncSlice";
 import { dataFromSnapshot } from "../services/firebaseService";
 
-export const useFirestoreDoc = ({ query, data, deps }) => {
+export const useFirestoreDoc = ({
+  query,
+  data,
+  deps,
+  shouldExecute = true,
+}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!shouldExecute) return;
+
     dispatch(asyncStart());
     const unsubscribe = onSnapshot(
-      query,
+      query(),
       (snapshot) => {
         if (!snapshot._document) {
           dispatch(
