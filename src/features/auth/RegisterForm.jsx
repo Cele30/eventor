@@ -5,34 +5,36 @@ import * as yup from "yup";
 import { Button, Label } from "semantic-ui-react";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../app/common/modal/modalSlice";
-import { signInWithEmail } from "../../app/services/firebaseService";
+import { registerInFirebase } from "../../app/services/firebaseService";
 
-function LoginForm() {
+function RegisterForm() {
   const dispatch = useDispatch();
 
   let schema = yup.object().shape({
+    username: yup.string().required(),
     email: yup.string().required().email(),
     password: yup.string().required(),
   });
 
   return (
-    <ModalWrapper size="mini" header="Sign in">
+    <ModalWrapper size="mini" header="Register">
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ username: "", email: "", password: "" }}
         validationSchema={schema}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
-            await signInWithEmail(values);
+            await registerInFirebase(values);
             setSubmitting(false);
             dispatch(closeModal());
           } catch (error) {
-            setErrors({ auth: "Problem with username or password" });
+            setErrors({ auth: error.message });
             setSubmitting(false);
           }
         }}
       >
         {({ isSubmitting, isValid, dirty, errors }) => (
           <Form className="ui form">
+            <TextInput name="username" placeholder="Username" />
             <TextInput name="email" placeholder="Email address" />
             <TextInput name="password" placeholder="Password" type="password" />
             {errors.auth && (
@@ -50,7 +52,7 @@ function LoginForm() {
               fluid
               size="large"
               color="teal"
-              content="Login"
+              content="Register"
             />
           </Form>
         )}
@@ -59,4 +61,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

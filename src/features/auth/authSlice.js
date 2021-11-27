@@ -3,16 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    authenticated: true,
-    currentUser: {
-      email: "test@test.com",
-    },
+    authenticated: false,
+    currentUser: null,
   },
   reducers: {
-    signInUser: (state, action) => {
+    signInUser: (state, { payload }) => {
       state.authenticated = true;
       state.currentUser = {
-        email: action.payload.email,
+        email: payload,
         photoURL: "/assets/user.png",
       };
     },
@@ -23,6 +21,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { signInUser, signOutUser } = authSlice.actions;
+export const { signOutUser, signInUser } = authSlice.actions;
 
 export default authSlice.reducer;

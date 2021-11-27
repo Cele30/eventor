@@ -18,6 +18,7 @@ function SignedOutMenu({ setAuth }) {
         inverted
         content="Register"
         style={{ marginLeft: "0.5em" }}
+        onClick={() => dispatch(openModal({ modalType: "RegisterForm" }))}
       />
     </Menu.Item>
   );

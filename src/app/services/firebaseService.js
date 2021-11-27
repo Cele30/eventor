@@ -10,10 +10,20 @@ import {
   orderBy,
   query,
   deleteDoc,
+  setDoc,
+  serverTimestamp,
 } from "firebase/firestore";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import cuid from "cuid";
 
 const db = getFirestore(firebase);
+const auth = getAuth();
 
 export const dataFromSnapshot = (snapshot) => {
   if (!snapshot.exists) return undefined;
@@ -68,4 +78,44 @@ export const cancelEventToggle = (event) => {
   return updateDoc(doc(db, "events", event.id), {
     isCancelled: !event.isCancelled,
   });
+};
+
+export const signInWithEmail = (creds) => {
+  return signInWithEmailAndPassword(auth, creds.email, creds.password);
+};
+
+export const signOutFromFirebase = () => {
+  return signOut(auth);
+};
+
+export const registerInFirebase = async (creds) => {
+  try {
+    const result = await createUserWithEmailAndPassword(
+      auth,
+      creds.email,
+      creds.password
+    );
+
+    await updateProfile(result.user, {
+      displayName: creds.username,
+    });
+
+    return await setUserProfileData(result.user);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const setUserProfileData = (user) => {
+  const userRef = doc(db, "users", user.uid);
+
+  setDoc(
+    userRef,
+    {
+      username: user.displayName,
+      email: user.email,
+      createdAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
 };
