@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { signOutFromFirebase } from "../../app/services/firebaseService";
 
 function SignedInMenu() {
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser } = useSelector(state => state.auth);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -33,6 +33,12 @@ function SignedInMenu() {
             icon="plus"
           />
           <Dropdown.Item text="My profile" icon="user" />
+          <Dropdown.Item
+            as={Link}
+            to="/account"
+            text="My account"
+            icon="settings"
+          />
           <Dropdown.Item text="Sign out" icon="power" onClick={handleSignOut} />
         </Dropdown.Menu>
       </Dropdown>

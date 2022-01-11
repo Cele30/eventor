@@ -9,8 +9,15 @@ import Sandbox from "../../features/sandbox/Sandbox";
 import ModalManager from "../common/modal/ModalManager";
 import { ToastContainer } from "react-toastify";
 import ErrorComponent from "../common/errors/ErrorComponent";
+import AccountPage from "../../features/auth/AccountPage";
+import { useSelector } from "react-redux";
+import LoadingComponent from "./LoadingComponent";
 
 function App() {
+  const { initialized } = useSelector(state => state.async);
+
+  if (!initialized) return <LoadingComponent content="Loading app..." />;
+
   return (
     <>
       <ModalManager />
@@ -29,6 +36,7 @@ function App() {
             {["createEvent", "manage/:id"].map((path, index) => (
               <Route path={path} element={<EventForm />} key={index} />
             ))}
+            <Route path="/account" element={<AccountPage />} />
             <Route path="/error" element={<ErrorComponent />} />
           </Route>
         </Routes>
