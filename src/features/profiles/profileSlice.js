@@ -5,6 +5,7 @@ const profileSlice = createSlice({
   initialState: {
     currentUserProfile: null,
     selectedUserProfile: null,
+    photos: [],
   },
   reducers: {
     listenToCurrentUserProfile: (state, { payload }) => {
@@ -13,10 +14,16 @@ const profileSlice = createSlice({
     listenToSelectedUserProfile: (state, { payload }) => {
       state.selectedUserProfile = payload;
     },
+    listenToUserPhotos: (state, { payload }) => {
+      state.photos = payload;
+    },
   },
 });
 
-export const { listenToCurrentUserProfile, listenToSelectedUserProfile } =
-  profileSlice.actions;
+export const {
+  listenToCurrentUserProfile,
+  listenToSelectedUserProfile,
+  listenToUserPhotos,
+} = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -12,6 +12,8 @@ import {
   deleteDoc,
   setDoc,
   serverTimestamp,
+  getDoc,
+  getDocs,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -21,6 +23,12 @@ import {
   updateProfile,
   updatePassword,
 } from "firebase/auth";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
 import cuid from "cuid";
 
 const db = getFirestore(firebase);
@@ -144,4 +152,73 @@ export const updateUserProfile = async profile => {
   } catch (error) {
     throw error;
   }
+};
+
+export const uploadToFirebaseStorage = (file, filename) => {
+  const auth = getAuth();
+  const storage = getStorage();
+
+  const storageRef = ref(
+    storage,
+    `${auth.currentUser.uid}/user_images/${filename}`
+  );
+
+  return uploadBytesResumable(storageRef, file);
+};
+
+export const updateUserProfilePhoto = async (downloadURL, filename) => {
+  const user = getAuth().currentUser;
+  const userDocRef = doc(db, "users", user.uid);
+
+  try {
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.data().photoURL) {
+      await updateDoc(userDocRef, {
+        photoURL: downloadURL,
+      });
+      await updateProfile(user, {
+        photoURL: downloadURL,
+      });
+    }
+
+    return await addDoc(collection(userDocRef, "photos"), {
+      name: filename,
+      url: downloadURL,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserPhotos = userUid => {
+  return query(collection(doc(db, "users", userUid), "photos"));
+};
+
+export const setMainPhoto = async photo => {
+  const user = getAuth().currentUser;
+
+  try {
+    await updateDoc(doc(db, "users", user.uid), {
+      photoURL: photo.url,
+    });
+    return await updateProfile(user, { photoURL: photo.url });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteFromFirebaseStorage = filename => {
+  const user = getAuth().currentUser;
+  const storageRef = getStorage();
+
+  const photoRef = ref(storageRef, `${user.uid}/user_images/${filename}`);
+
+  return deleteObject(photoRef);
+};
+
+export const deletePhotoFromCollection = photoId => {
+  const user = getAuth().currentUser;
+
+  return deleteDoc(doc(db, `users/${user.uid}/photos`, photoId));
 };
