@@ -12,6 +12,7 @@ import ErrorComponent from "../common/errors/ErrorComponent";
 import AccountPage from "../../features/auth/AccountPage";
 import { useSelector } from "react-redux";
 import LoadingComponent from "./LoadingComponent";
+import ProfilePage from "../../features/profiles/profilePage/ProfilePage";
 
 function App() {
   const { initialized } = useSelector(state => state.async);
@@ -37,6 +38,7 @@ function App() {
               <Route path={path} element={<EventForm />} key={index} />
             ))}
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/error" element={<ErrorComponent />} />
           </Route>
         </Routes>

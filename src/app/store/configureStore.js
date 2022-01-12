@@ -5,6 +5,7 @@ import modalReducer from "../common/modal/modalSlice";
 import authReducer from "../../features/auth/authSlice";
 import asyncReducer from "../asyncSlice/asyncSlice";
 import { verifyAuth } from "../../features/auth/authActions";
+import profileReducer from "../../features/profiles/profileSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     modal: modalReducer,
     auth: authReducer,
     async: asyncReducer,
+    profile: profileReducer,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({

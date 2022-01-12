@@ -125,3 +125,23 @@ export const updateUserPassword = creds => {
   const user = getAuth().currentUser;
   return updatePassword(user, creds.newPassword1);
 };
+
+export const getUserProfile = userId => {
+  const usersRef = collection(db, "users");
+  return doc(usersRef, userId);
+};
+
+export const updateUserProfile = async profile => {
+  const auth = getAuth();
+
+  try {
+    if (auth.currentUser.displayName !== profile.username) {
+      await updateProfile(auth.currentUser, {
+        displayName: profile.username,
+      });
+    }
+    return await updateDoc(doc(db, "users", auth.currentUser.uid), profile);
+  } catch (error) {
+    throw error;
+  }
+};

@@ -9,12 +9,9 @@ const authSlice = createSlice({
   reducers: {
     signInUser: (state, { payload }) => {
       state.authenticated = true;
-      state.currentUser = {
-        email: payload,
-        photoURL: "/assets/user.png",
-      };
+      state.currentUser = payload;
     },
-    signOutUser: (state) => {
+    signOutUser: state => {
       state.authenticated = false;
       state.currentUser = null;
     },
