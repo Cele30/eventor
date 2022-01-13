@@ -6,6 +6,7 @@ const profileSlice = createSlice({
     currentUserProfile: null,
     selectedUserProfile: null,
     photos: [],
+    profileEvents: [],
   },
   reducers: {
     listenToCurrentUserProfile: (state, { payload }) => {
@@ -17,6 +18,9 @@ const profileSlice = createSlice({
     listenToUserPhotos: (state, { payload }) => {
       state.photos = payload;
     },
+    listenToUserEvents: (state, { payload }) => {
+      state.profileEvents = payload;
+    },
   },
 });
 
@@ -24,6 +28,7 @@ export const {
   listenToCurrentUserProfile,
   listenToSelectedUserProfile,
   listenToUserPhotos,
+  listenToUserEvents,
 } = profileSlice.actions;
 
 export default profileSlice.reducer;

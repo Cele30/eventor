@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Grid } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
@@ -12,13 +13,23 @@ import { listenToEventsFromFirestore } from "../../../app/services/firebaseServi
 
 function EventDashboard() {
   const dispatch = useDispatch();
-  const { events } = useSelector((state) => state.event);
-  const { loading } = useSelector((state) => state.async);
+  const { events } = useSelector(state => state.event);
+  const { loading } = useSelector(state => state.async);
+  const [predicate, setPredicate] = useState(
+    new Map([
+      ["startDate", new Date()],
+      ["filter", "all"],
+    ])
+  );
+
+  const handleSetPredicate = (key, value) => {
+    setPredicate(new Map(predicate.set(key, value)));
+  };
 
   useFirestoreCollection({
-    query: () => listenToEventsFromFirestore(),
-    data: (events) => dispatch(listenToEvents(events)),
-    deps: [dispatch],
+    query: () => listenToEventsFromFirestore(predicate),
+    data: events => dispatch(listenToEvents(events)),
+    deps: [dispatch, predicate],
   });
 
   return (
@@ -33,7 +44,11 @@ function EventDashboard() {
         <EventList events={events} />
       </Grid.Column>
       <Grid.Column width={6}>
-        <EventFilters />
+        <EventFilters
+          predicate={predicate}
+          setPredicate={handleSetPredicate}
+          loading={loading}
+        />
       </Grid.Column>
       <Outlet />
     </Grid>

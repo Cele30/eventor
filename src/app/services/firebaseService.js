@@ -13,6 +13,7 @@ import {
   deleteDoc,
   setDoc,
   serverTimestamp,
+  where,
   getDoc,
 } from "firebase/firestore";
 import {
@@ -51,9 +52,26 @@ export const dataFromSnapshot = snapshot => {
   };
 };
 
-export const listenToEventsFromFirestore = () => {
+export const listenToEventsFromFirestore = predicate => {
+  const user = getAuth().currentUser;
+
   const eventsRef = collection(db, "events");
-  return query(eventsRef, orderBy("date"));
+  switch (predicate.get("filter")) {
+    case "isGoing":
+      return query(
+        eventsRef,
+        where("attendeeIds", "array-contains", user.uid),
+        where("date", ">=", predicate.get("startDate"))
+      );
+    case "isHost":
+      return query(
+        eventsRef,
+        where("hostUid", "==", user.uid),
+        where("date", ">=", predicate.get("startDate"))
+      );
+    default:
+      return query(eventsRef, where("date", ">=", predicate.get("startDate")));
+  }
 };
 
 export const listenToEventFromFirestore = eventId => {
@@ -253,5 +271,34 @@ export const cancelUserAttendance = async event => {
     });
   } catch (error) {
     throw error;
+  }
+};
+
+export const getUserEventsQuery = (activeTab, userUid) => {
+  const eventsRef = collection(db, "events");
+  const today = new Date();
+
+  switch (activeTab) {
+    case 1: // past events
+      return query(
+        eventsRef,
+        where("attendeeIds", "array-contains", userUid),
+        where("date", "<=", today),
+        orderBy("date", "desc")
+      );
+    case 2: // hosting
+      return query(
+        eventsRef,
+        where("hostUid", "==", userUid),
+        orderBy("date", "desc")
+      );
+    default:
+      // future
+      return query(
+        eventsRef,
+        where("attendeeIds", "array-contains", userUid),
+        where("date", ">=", today),
+        orderBy("date")
+      );
   }
 };
