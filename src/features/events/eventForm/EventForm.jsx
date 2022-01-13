@@ -26,10 +26,10 @@ function EventForm() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const selectedEvent = useSelector((state) =>
-    state.event.events.find((e) => e.id === id)
+  const selectedEvent = useSelector(state =>
+    state.event.events.find(e => e.id === id)
   );
-  const { loading, error } = useSelector((state) => state.async);
+  const { loading, error } = useSelector(state => state.async);
   const dispatch = useDispatch();
 
   let initialValues = selectedEvent ?? {
@@ -50,7 +50,7 @@ function EventForm() {
     date: yup.string().required(),
   });
 
-  const handleCancelToggle = async (event) => {
+  const handleCancelToggle = async event => {
     setConfirmOpen(false);
     setLoadingCancel(true);
 
@@ -66,7 +66,7 @@ function EventForm() {
   useFirestoreDoc({
     shouldExecute: !!id,
     query: () => listenToEventFromFirestore(id),
-    data: (event) => dispatch(listenToEvents([event])),
+    data: event => dispatch(listenToEvents([event])),
     deps: [id],
   });
 
@@ -125,9 +125,9 @@ function EventForm() {
                 loading={loadingCancel}
                 type="button"
                 floated="left"
-                color={selectedEvent.isCancelled ? "green" : "red"}
+                color={selectedEvent?.isCancelled ? "green" : "red"}
                 content={
-                  selectedEvent.isCancelled
+                  selectedEvent?.isCancelled
                     ? "Reactivate event"
                     : "Cancel event"
                 }
@@ -158,7 +158,7 @@ function EventForm() {
 
       <Confirm
         content={
-          selectedEvent.isCancelled
+          selectedEvent?.isCancelled
             ? "This will reactivate the event - are you sure?"
             : "This will cancel the event - are you sure?"
         }

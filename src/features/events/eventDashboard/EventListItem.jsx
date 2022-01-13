@@ -13,7 +13,10 @@ function EventListItem({ event }) {
             <Item.Image size="tiny" circular src={event.hostPhotoURL} />
             <Item.Content>
               <Item.Header content={event.title} />
-              <Item.Description>Hosted by {event.hostedBy}</Item.Description>
+              <Item.Description>
+                Hosted by{" "}
+                <Link to={`/profile/${event.hostUid}`}>{event.hostedBy}</Link>
+              </Item.Description>
               {event.isCancelled && (
                 <Label
                   style={{ top: "-40px" }}
@@ -35,9 +38,9 @@ function EventListItem({ event }) {
         </span>
       </Segment>
 
-      <Segment secondary>
+      <Segment>
         <List horizontal>
-          {event.attendees.map((attendee) => (
+          {event.attendees.map(attendee => (
             <EventListAttendee key={attendee.id} attendee={attendee} />
           ))}
         </List>

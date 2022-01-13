@@ -6,6 +6,7 @@ import {
   doc,
   addDoc,
   arrayUnion,
+  arrayRemove,
   updateDoc,
   orderBy,
   query,
@@ -13,7 +14,6 @@ import {
   setDoc,
   serverTimestamp,
   getDoc,
-  getDocs,
 } from "firebase/firestore";
 import {
   getAuth,
@@ -29,7 +29,6 @@ import {
   uploadBytesResumable,
   deleteObject,
 } from "firebase/storage";
-import cuid from "cuid";
 
 const db = getFirestore(firebase);
 const auth = getAuth();
@@ -63,15 +62,19 @@ export const listenToEventFromFirestore = eventId => {
 };
 
 export const addEventToFirestore = event => {
+  const user = getAuth().currentUser;
+
   return addDoc(collection(db, "events"), {
     ...event,
-    hostedBy: "Diana",
-    hostPhotoURL: "https://randomuser.me/api/portraits/women/20.jpg",
+    hostUid: user.uid,
+    hostedBy: user.displayName,
+    hostPhotoURL: user.photoURL || null,
     attendees: arrayUnion({
-      id: cuid(),
-      displayName: "Diana",
-      photoURL: "https://randomuser.me/api/portraits/women/20.jpg",
+      id: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL || null,
     }),
+    attendeeIds: arrayUnion(user.uid),
   });
 };
 
@@ -221,4 +224,34 @@ export const deletePhotoFromCollection = photoId => {
   const user = getAuth().currentUser;
 
   return deleteDoc(doc(db, `users/${user.uid}/photos`, photoId));
+};
+
+export const addUserAttendance = event => {
+  const user = getAuth().currentUser;
+
+  return updateDoc(doc(db, "events", event.id), {
+    attendees: arrayUnion({
+      id: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL || null,
+    }),
+    attendeeIds: arrayUnion(user.uid),
+  });
+};
+
+export const cancelUserAttendance = async event => {
+  const user = getAuth().currentUser;
+
+  try {
+    const eventDoc = await getDoc(doc(db, "events", event.id));
+
+    return updateDoc(doc(db, "events", event.id), {
+      attendeeIds: arrayRemove(user.uid),
+      attendees: eventDoc
+        .data()
+        .attendees.filter(attendee => attendee.id !== user.uid),
+    });
+  } catch (error) {
+    throw error;
+  }
 };
