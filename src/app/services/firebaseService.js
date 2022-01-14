@@ -31,6 +31,15 @@ import {
   deleteObject,
 } from "firebase/storage";
 
+// realtime database
+import {
+  getDatabase,
+  ref as Ref,
+  push,
+  orderByKey,
+  query as RTQuery,
+} from "firebase/database";
+
 const db = getFirestore(firebase);
 const auth = getAuth();
 
@@ -50,6 +59,13 @@ export const dataFromSnapshot = snapshot => {
     ...data,
     id: snapshot.id,
   };
+};
+
+export const firebaseObjectToArray = snapshot => {
+  if (snapshot) {
+    // console.log("Object.entries()", Object.entries(snapshot));
+    return Object.entries(snapshot).map(item => ({ ...item[1], id: item[0] }));
+  }
 };
 
 export const listenToEventsFromFirestore = predicate => {
@@ -301,4 +317,29 @@ export const getUserEventsQuery = (activeTab, userUid) => {
         orderBy("date")
       );
   }
+};
+
+// realtime database
+export const addEventChatComment = (eventId, values) => {
+  const user = getAuth().currentUser;
+  const database = getDatabase();
+
+  const newComment = {
+    displayName: user.displayName,
+    photoURL: user.photoURL,
+    uid: user.uid,
+    text: values.comment,
+    date: Date.now(),
+    parentId: values.parentId,
+  };
+
+  const chatListRef = Ref(database, `chat/${eventId}`);
+
+  return push(chatListRef, newComment);
+};
+
+export const getEventChatRef = eventId => {
+  const database = getDatabase();
+
+  return RTQuery(Ref(database, `chat/${eventId}`), orderByKey());
 };

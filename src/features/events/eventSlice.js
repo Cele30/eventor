@@ -9,6 +9,7 @@ export const fetchEvents = createAsyncThunk("event/fetchEvents", async () => {
 const initialState = {
   events: [],
   loading: false,
+  comments: [],
 };
 
 const eventSlice = createSlice({
@@ -19,22 +20,28 @@ const eventSlice = createSlice({
       state.events.push(action.payload);
     },
     updateEvent: (state, action) => {
-      const updatedEvents = state.events.map((event) =>
+      const updatedEvents = state.events.map(event =>
         event.id === action.payload.id ? action.payload : event
       );
       state.events = updatedEvents;
     },
     deleteEvent: (state, action) => {
       const newEvents = state.events.filter(
-        (event) => event.id !== action.payload
+        event => event.id !== action.payload
       );
       state.events = newEvents;
     },
     listenToEvents: (state, action) => {
       state.events = action.payload;
     },
+    listenToEventChat: (state, action) => {
+      state.comments = action.payload;
+    },
+    clearComments: state => {
+      state.comments = [];
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(fetchEvents.pending, (state, action) => {
       state.loading = true;
     });
@@ -45,7 +52,13 @@ const eventSlice = createSlice({
   },
 });
 
-export const { createEvent, updateEvent, deleteEvent, listenToEvents } =
-  eventSlice.actions;
+export const {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  listenToEvents,
+  listenToEventChat,
+  clearComments,
+} = eventSlice.actions;
 
 export default eventSlice.reducer;
